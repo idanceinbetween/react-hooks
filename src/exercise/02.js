@@ -4,8 +4,11 @@
 import React from 'react'
 
 function Greeting({initialName = ''}) {
+  // Lazy state initialization: using a callback in useState
+  // it will only call that function to get the state value
+  // when the component is rendered the first time.
   const [name, setName] = React.useState(
-    window.localStorage.getItem('name') || initialName,
+    () => window.localStorage.getItem('name') || initialName,
   )
 
   React.useEffect(() => {
