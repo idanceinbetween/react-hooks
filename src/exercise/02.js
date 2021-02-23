@@ -11,9 +11,15 @@ function Greeting({initialName = ''}) {
     () => window.localStorage.getItem('name') || initialName,
   )
 
+  // The callback we’re passing in is called after
+  // *every* render of our component (including re-renders).
+  // Adds a dependency array of 'name' to avoid the callback
+  // being called too frequently.
+  // NOTE: This uses shallow comparison Object.is or ===. Cannot
+  // compare a complex object like {some: "object"}.
   React.useEffect(() => {
     window.localStorage.setItem('name', name)
-  })
+  }, [name])
 
   function handleChange(event) {
     setName(event.target.value)
