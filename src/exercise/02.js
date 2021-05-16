@@ -3,23 +3,20 @@
 
 import React from 'react'
 
-function Greeting({initialName = ''}) {
-  // Lazy state initialization: using a callback in useState
-  // it will only call that function to get the state value
-  // when the component is rendered the first time.
-  const [name, setName] = React.useState(
-    () => window.localStorage.getItem('name') || initialName,
+function useLocalStorageState(key, initialValue = '') {
+  const [state, setState] = React.useState(
+    () => window.localStorage.getItem(key) || initialValue,
   )
 
-  // The callback we’re passing in is called after
-  // *every* render of our component (including re-renders).
-  // Adds a dependency array of 'name' to avoid the callback
-  // being called too frequently.
-  // NOTE: This uses shallow comparison Object.is or ===. Cannot
-  // compare a complex object like {some: "object"}.
   React.useEffect(() => {
-    window.localStorage.setItem('name', name)
-  }, [name])
+    window.localStorage.setItem(key, state)
+  }, [key, state])
+
+  return [state, setState]
+}
+
+function Greeting({initialName = ''}) {
+  const [name, setName] = useLocalStorageState('name', initialName)
 
   function handleChange(event) {
     setName(event.target.value)
